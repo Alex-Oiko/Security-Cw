@@ -5,3 +5,5 @@
 @ /functions/core/contact.php commented the part of adding an the contact_email and the user_email to the form.
 
 also for above ^^ @ contact.php changed the post commands at line 26 and in their place i put the contact_email from the db and the user_email from the db. Now the email addresses cannot be changed using firebug
+
+@functions/core/login.php....added a function make_toke(). Also in login I add to the session array a token element.

@@ -5,7 +5,7 @@ require_once('./include/global.php');
 global $core, $document, $user, $db;
 
 /* Above page-specific */
-//$document->header("Login"); Not for login page
+///$document->header("Login"); Not for login page
 
 /* ================= Page Specific ====================== */
 //Include login functions
@@ -19,7 +19,7 @@ if (isset($_POST['user_name']) && isset($_POST['user_password'])) {
 
 //Log out
 elseif (isset($_GET['action']) && $_GET['action'] == "logout") {
-	force_logout();
+	force_logout($core->session->get('token'));
 	$core->do_redirect("index.php");
 }
 //Display login form

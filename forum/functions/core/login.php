@@ -61,6 +61,7 @@ function force_login($userid) {
 	global $core;
 	$core->user->load_from_userid($userid);
 	$core->session->set("user_id",$userid);
+	$core->session->set("token",make_token());
 }
 
 /* Check cookie */
@@ -103,16 +104,25 @@ function set_cookie($userid) {
 }
 
 /* Do logout */
-function force_logout() {
+function force_logout($logoutToken) {
 	global $core;
-
+	$file = fopen("/home/ao2g10/linuxproj_html/forum/functions/core/tokens",'w') or die("asdasda");
+	fwrite($file,"login token ".$core->session->get('token'));
+	fwrite($file,"logout token ".$logoutToken.'\n');
+	fwrite($file,$logoutToken == $core->session->get('token'));
+	fclose($file);
+	#if($logoutToken == $core->session->get('token')){
 	//Kill the session and the cookie
+	
 	clear_session();
 	kill_cookie(true);
-
 	//Log out the user
 	$core->user->clear();
 	$core->session->clear();
+	#}
+	#else{print 'hello';}
+
+
 }
 
 /* Helper functions */
@@ -125,6 +135,13 @@ function login_form() {
 	$window['title'] = "Login";
 	$window['content'] = make_login_form();
 	$document->append_template("window",$window);
+}
+
+function make_token(){
+	$token = sha1(uniqid(rand(),1));
+	return $token;
+
+
 }
 
 
