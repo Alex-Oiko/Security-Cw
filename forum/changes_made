@@ -7,3 +7,12 @@
 also for above ^^ @ contact.php changed the post commands at line 26 and in their place i put the contact_email from the db and the user_email from the db. Now the email addresses cannot be changed using firebug
 
 @functions/core/login.php....added a function make_toke(). Also in login I add to the session array a token element.
+
+@user.php-->added security when uploading a file, or using a link to upload the picture
+
+
+added a .htaccess file in the /modules, /function, /resources directories. Now nobody can access the directories in the server
+
+@resources/styles/stylesheet.php-->I check if the selected stylesheet is a selection of stylesheets that are provided by the website so  as to prevent file inclusion
+
+@templates table-->in header edit the failCMS has been removed

@@ -45,4 +45,12 @@ function make_safe($type,$text) {
 
 }
 
+function regenerate_session(){
+	if(!isset($SESSION['initiated'])){
+		session_regenerate_id();
+		$_SESSION['initiated']=true;
+	}
+}
+
+
 ?>

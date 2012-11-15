@@ -9,7 +9,17 @@
 header("Content-type: text/css");
 
 //Load style
-$style = trim($_GET['style']);
+$available_styles=array('blue.css','common.css');
+$file = $_GET['style'];
+
+if(!in_array($file,$available_styles)){
+	die("asd");
+}
+else{
+	$style = trim($_GET['style']);
+
+
+#die("sadasda");
 
 //Load the common shared file
 $common = file_get_contents("./common.css");
@@ -22,5 +32,5 @@ $style = $common . $style;
 
 //Output the result
 print $style;
-
+}
 ?>

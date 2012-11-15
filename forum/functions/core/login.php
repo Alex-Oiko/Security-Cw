@@ -38,12 +38,20 @@ function do_login($username,$password) {
 
 /* Set the session data */
 function set_session($userid) {
+	$incactive=30;
+
 	//Close the old logged-out session
 	session_destroy();
 
 	//Start a new PHP session
 	session_id(time());
+	regenerate_session();
 	session_start();
+	#$session_life=time()-$_session['start'];
+	#if($session_life>$inactive){
+	#	session_destroy();
+	#	force_logout();
+	#}
 }
 
 function clear_session() {
