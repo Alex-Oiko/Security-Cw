@@ -1,4 +1,4 @@
-@ register.php--->added an extra if statement to prevent brute force attacking of passwords
+@ register.php--->added an extra if statement to prevent brute force attacking of passwords by increasing number of characters in register. Also, added a function compute_salt in security.php which computes salts and stores them in the database. The table user has one more entry now(salt). Finally, I firstly query for the salt and then the password. LOGIN IS COMMENTED OUT NOW. CHANGE IT BEFORE SUBMISSION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 @ /include/class_database & /include/functions.php added an if statement in order to chck if the user is an admin in order to determine whether to print the stack trace or not
 
@@ -16,3 +16,9 @@ added a .htaccess file in the /modules, /function, /resources directories. Now n
 @resources/styles/stylesheet.php-->I check if the selected stylesheet is a selection of stylesheets that are provided by the website so  as to prevent file inclusion
 
 @templates table-->in header edit the failCMS has been removed
+
+added a secret question and answer in register and login. Probably stupid but still. Sidebar login does not work, because it doesnt read the answer.
+
+added a captcha to login. REMEMBER TO REFER THAT I HAVE USED IT WHEN SUBMITTING. NOT ALL YOUR WORK
+
+serialized the cookies. Both the username and the user type. I unserialize every time I check

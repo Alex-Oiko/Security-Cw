@@ -105,10 +105,11 @@ class Document {
 
 	/* Mini functions that map to templates */
 	public function make_form($id,$name,$action="",$method="post",$upload=false) {
+		$token=make_token();
 		$siteurl = $this->core->config['Paths']['web'];
 		$action = "$siteurl$action";
 		if ($id == "" || $name == "") { fatal_error("Missing form data for form creation"); }
-		$form = new Form($this,$id,$name,$action,$method,$upload);
+		$form = new Form($this,$id,$name,$action,$method,$upload,$token);
 		return $form;
 	}
 
@@ -121,15 +122,16 @@ class Form {
 	private $form_html = "";
 	private $document;
 	private $form_details;
-
 	/* Create a new form */
-	public function Form(&$document,$id,$name,$action,$method,$upload=false) {
+	public function Form(&$document,$id,$name,$action,$method,$upload=false,$token) {
 		$this->document =& $document;
 		$this->form_details['id'] = $id;
 		$this->form_details['name'] = $name;
 		$this->form_details['action'] = $action;
 		$this->form_details['method'] = $method;
 		$this->form_details['additional'] = ($upload) ? 'enctype="multipart/form-data"' : "";
+		$this->form_details['token'] = $token;
+		
 	}
 
 	/* Append more form HTML */

@@ -1,7 +1,6 @@
 <?php
 
 //Ideally, put any security related functions in this file!
-
 /* Perform validation on text given a type */
 function validate($type,$text) {
 		switch ($type) {
@@ -37,6 +36,7 @@ function make_safe($type,$text) {
 	}
 
 	else if($type="text"){
+		$text = htmlspecialchars($text);
 		$text = mysql_real_escape_string($text);
 		return $text;
 	}
@@ -52,5 +52,27 @@ function regenerate_session(){
 	}
 }
 
+function compute_salt(){
+	$chars='ABCDEFGHIJKLMNOPQRSTVUWXYZabcdefghijklmnopqrstvuwxyz0123456789';
+	$salt='';
+	for($i=0;$i<10;$i++){
+	$salt.=$chars[rand(0,62)];
+	}
+	return $salt;
+}
+
+function make_token(){ 
+	$token = sha1(uniqid(rand(),1));
+        $_SESSION['token']=$token;
+	return $token;
+ 
+}
+
+function check_tokens($post,$session){
+	if(isset($post) && $post==$session){
+		return 1;
+	}
+	else return 0;
+}
 
 ?>

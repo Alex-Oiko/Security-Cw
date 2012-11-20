@@ -52,7 +52,6 @@ function board_add() {
 	$form->add_element_only("submit","Submit","submit","Create");
 	$form->append('</div>');
 	$formhtml = $form->output();
-
 	$document->append_template("title",array('title'=>"Admin: Create Board"));
 	$document->append_template("window",array('title'=>"Create Board",'content'=>$formhtml));
 }
@@ -115,6 +114,7 @@ function board_edit2($id) {
 	$order = $_POST['board_order'];
 
 	//Update database
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("boards","UPDATE");
 	$query->add_data("board_name",$title);
 	$query->add_data("category_id",$category);
@@ -123,7 +123,10 @@ function board_edit2($id) {
 	$query->add_condition("board_id","=",$id);
 	$query->set_limit(1);
 	$query->execute();
-
+	}
+	else{
+		fatal_user_error("Something went wrong","Please contact out administrators");
+	}
 	//Preview
 	board_list();
 }
@@ -139,6 +142,7 @@ function board_add2() {
 	$category = $_POST['category_id'];
 
 	//Update database
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("boards","INSERT");
 	$query->add_data("board_name",$title);
 	$query->add_data("board_description",$text);
@@ -150,6 +154,10 @@ function board_add2() {
 
 	//Preview
 	board_list($id);
+	}
+	else{
+		fatal_user_error("Something went wrong","Please contact our administrators");
+	}
 }
 
 /* Are you sure you want to delete this board? */

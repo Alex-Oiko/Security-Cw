@@ -46,14 +46,17 @@ function do_register($username,$password_hash,$email) {
 	if(strlen($password_hash)<8){
 		fatal_user_error("Your password is too short. It must be more than 8 characters");
 	}
-	
+
+		
 	//Otherwise add user to database
+	$salt = compute_salt();
 	$query = $core->db->make_query("user","INSERT");
 	$query->add_data("user_name",$username);
 	$query->add_data("user_email",$email);
-	$query->add_data("user_password",$password_hash);
+	$query->add_data("user_password",crypt($password_hash,$salt));
 	$query->add_data("user_type",1);
 	$query->add_data("user_ip",$_SERVER['REMOTE_ADDR']);
+	$query->add_data("salt",$salt);
 	$query->execute();
 
 	//Registration successful

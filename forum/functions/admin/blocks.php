@@ -92,6 +92,7 @@ function block_edit2($id) {
 	$order = $_POST['block_order'];
 
 	//Update database
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("blocks","UPDATE");
 	$query->add_data("block_title",$title);
 	$query->add_data("block_content",$text);
@@ -103,6 +104,10 @@ function block_edit2($id) {
 
 	//Preview
 	block_list();
+	}
+	else{
+		fatal_user_error("Something went wrong","Please try again");
+	}
 }
 
 /* Commit block add to database */
@@ -116,6 +121,8 @@ function block_add2() {
 	$order = $_POST['block_order'];
 
 	//Update database
+
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("blocks","INSERT");
 	$query->add_data("block_title",$title);
 	$query->add_data("block_content",$text);
@@ -127,6 +134,10 @@ function block_add2() {
 
 	//Preview
 	block_list($id);
+	}
+	else{
+		fatal_user_error("Something went wrong","Please try again");
+	}
 }
 
 /* Are you sure you want to delete this block? */

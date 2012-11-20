@@ -89,6 +89,7 @@ function category_edit2($id) {
 	$order = $_POST['category_order'];
 
 	//Update database
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("categories","UPDATE");
 	$query->add_data("category_name",$title);
 	$query->add_data("category_description",$text);
@@ -99,6 +100,10 @@ function category_edit2($id) {
 
 	//Preview
 	category_list();
+	}
+	else{
+		fatal_user_error("Something went wrong","Please contact the administrators")
+	}
 }
 
 /* Commit category add to database */
@@ -109,8 +114,9 @@ function category_add2() {
 	$title = $_POST['category_name'];
 	$text = $_POST['category_description'];
 	$order = $_POST['category_order'];
-
+	
 	//Update database
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	$query = $db->make_query("categories","INSERT");
 	$query->add_data("category_name",$title);
 	$query->add_data("category_description",$text);
@@ -121,6 +127,10 @@ function category_add2() {
 
 	//Preview
 	category_list($id);
+	}
+	else{
+		fatal_user_error("Something went wrong. Please contact the administrators");
+	}
 }
 
 /* Are you sure you want to delete this category? */
