@@ -1,24 +1,30 @@
 @ register.php--->added an extra if statement to prevent brute force attacking of passwords by increasing number of characters in register. Also, added a function compute_salt in security.php which computes salts and stores them in the database. The table user has one more entry now(salt). Finally, I firstly query for the salt and then the password. LOGIN IS COMMENTED OUT NOW. CHANGE IT BEFORE SUBMISSION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-@ /include/class_database & /include/functions.php added an if statement in order to chck if the user is an admin in order to determine whether to print the stack trace or not
+11)@ /include/class_database & /include/functions.php added an if statement in order to chck if the user is an admin in order to determine whether to print the stack trace or not
 
-@ /functions/core/contact.php commented the part of adding an the contact_email and the user_email to the form.
+9)@ /functions/core/contact.php commented the part of adding an the contact_email and the user_email to the form. Also  @ contact.php changed the post commands at line 26 and in their place i put the contact_email from the db and the user_email from the db. Now the email addresses cannot be changed using firebug
 
-also for above ^^ @ contact.php changed the post commands at line 26 and in their place i put the contact_email from the db and the user_email from the db. Now the email addresses cannot be changed using firebug
+@functions/security/security.php--> added a function that is called regenerate_session which is called in the session function of login. It regenerates the session when it is needed to be regenerated
 
-@functions/core/login.php....added a function make_toke(). Also in login I add to the session array a token element.
-
-@user.php-->added security when uploading a file, or using a link to upload the picture
+3)@user.php-->added security when uploading a file, or using a link to upload the picture
 
 
-added a .htaccess file in the /modules, /function, /resources directories. Now nobody can access the directories in the server
+6)added a .htaccess file in the /modules, /function, /resources directories. Now nobody can access the directories in the server(info.php,config.php are not visible now. Maybe delete them?)
 
-@resources/styles/stylesheet.php-->I check if the selected stylesheet is a selection of stylesheets that are provided by the website so  as to prevent file inclusion
+13)@resources/styles/stylesheet.php-->I check if the selected stylesheet is a selection of stylesheets that are provided by the website so  as to prevent file inclusion
 
-@templates table-->in header edit the failCMS has been removed
-
-added a secret question and answer in register and login. Probably stupid but still. Sidebar login does not work, because it doesnt read the answer.
+4)@templates table-->in header template edit the failCMS has been removed
 
 added a captcha to login. REMEMBER TO REFER THAT I HAVE USED IT WHEN SUBMITTING. NOT ALL YOUR WORK
 
-serialized the cookies. Both the username and the user type. I unserialize every time I check
+7)serialized the cookies. Both the username and the user type. I unserialize every time I check
+
+2)@security.php have added code on the make_safe function. This prevents XSS
+
+1)@function/core/login.php have added safety to the login form. Made it go throut htmlspecialchars in order to prevent SQL injection. The same thing happened for the search in /modules/forum/class_posts in the search_posts function
+
+5)Now the passwords in the database are not stored as plain text, but rather as hashes. In order to do that a function in security.php was created which computes the salt. The salt is saved in the database and extra lines have been added to the /functions/core/login.php in order to make the login work with hashes
+
+10) The Qaptcha thing. It is unfinished.
+
+15) Every form computes a token(which saves it in a hidden input) which also adds it in the SESSION['token']. Every time the form is submitted the session input is checked with the post input to see if they match. If they dont then the form is not submitted. More or less the same is done for the logout. I attach a token in the logout link and also put it in the user's session(SESSION['logout_token']). If an unwanted logout happens the 2 tokens are checked in order to see if the logout was intended by the user. Added some additional code in the ./login.php file for the checks. All this prevents csrf 

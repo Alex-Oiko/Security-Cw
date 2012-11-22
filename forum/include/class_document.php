@@ -31,9 +31,16 @@ class Document {
 		global $user;
 		$variables['page'] = $page;
 
-		$this->append_template("header",$variables);		
-		$this->append_template("menu_" . $user->get('user_type'));
-
+		$this->append_template("header",$variables);
+		if($user->get('user_type')==1 || $user->get('user_type')==2){
+			$token = sha1(uniqid(rand(),1));
+			$_SESSION['logout_token']=$token;	
+			$menuVar['token']=$token;
+			$this->append_template("menu_" . $user->get('user_type'),$menuVar);
+		}
+		else{
+			$this->append_template("menu_" . $user->get('user_type'));
+		}
 		//Do sidebar hooks
 		$this->core->do_hooks('sidebar');
 

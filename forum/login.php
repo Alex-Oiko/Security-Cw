@@ -15,17 +15,23 @@ require_once('./functions/core/login.php');
 if (isset($_POST['user_name']) && isset($_POST['user_password'])) {
 	do_login($_POST['user_name'],$_POST['user_password']);
 	$core->do_redirect("index.php");
-}
+	}
 
 //Log out
-elseif (isset($_GET['action']) && $_GET['action'] == "logout") {
+elseif (isset($_GET['action']) && $_GET['action'] == "logout" && $_SESSION['logout_token']==$_GET['token']) {
 	force_logout($core->session->get('token'));
 	$core->do_redirect("index.php");
+	fatal_user_error("asddas");
 }
 //Display login form
-else { 
+elseif(!isset($_GET['action'])) { 
+	#fatal_user_error($_GET['action']);
 	$document->header("Login"); 
 	login_form(); 
+}
+//if it is an attempt of csrf
+else{
+	$core->do_redirect("index.php");
 }
 
 /* End page-specific */

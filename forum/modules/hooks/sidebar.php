@@ -23,6 +23,7 @@ function do_sidebar() {
 		if ($block['content'] != "") { $blockhtml .= $document->get_template("block",$block); }	
 	}
 
+
 	//Generate sidebar template
 	$variables['blocks'] = $blockhtml;
 	$document->append_template("sidebar",$variables);

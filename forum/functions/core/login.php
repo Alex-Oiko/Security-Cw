@@ -9,7 +9,7 @@ function make_login_form() {
 	$form->append("<p>Please type your username and password in the fields below to log in.</p>");
 	$form->add_element("user_name","User Name","text","","Your username",'style="width: 200px;"');
 	$form->add_element("user_password","Password","password","","Your password",'style="width: 200px;"');
-	$form->add_element("captcha","Captcha","img","","CaptchaSecurityImages.php");
+	//$form->add_element("loginbar","Scrolable Bar","loginbar","","","");
 	$form->append('<div class="center">');
 	$form->add_element_only("submit","Log in","submit","Log in","Log in");
 	$form->append('</div>');
@@ -52,6 +52,8 @@ function set_session($userid) {
 	session_id(time());
 	regenerate_session();
 	session_start();
+	$aResponse['error'] = false; 
+
 }
 
 function clear_session() {
@@ -111,15 +113,8 @@ function set_cookie($userid) {
 }
 
 /* Do logout */
-function force_logout($logoutToken) {
+function force_logout() {
 	global $core;
-	#$file = fopen("/home/ao2g10/linuxproj_html/forum/functions/core/tokens",'w') or die("asdasda");
-	#fwrite($file,"login token ".$core->session->get('token'));
-	#fwrite($file,"logout token ".$logoutToken.'\n');
-	#fwrite($file,$logoutToken == $core->session->get('token'));
-	#fclose($file);
-	#if($logoutToken == $core->session->get('token')){
-	//Kill the session and the cookie
 
 	clear_session();
 	kill_cookie(true);
