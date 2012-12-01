@@ -3,7 +3,7 @@
 /* Require global classes and functionality */
 require_once('./include/global.php');
 global $core, $document, $user, $db;
-
+regenerate_session();
 /* Above page-specific */
 $document->header("Contact");
 

@@ -28,3 +28,5 @@ added a captcha to login. REMEMBER TO REFER THAT I HAVE USED IT WHEN SUBMITTING.
 10) The Qaptcha thing. It is unfinished.
 
 15) Every form computes a token(which saves it in a hidden input) which also adds it in the SESSION['token']. Every time the form is submitted the session input is checked with the post input to see if they match. If they dont then the form is not submitted. More or less the same is done for the logout. I attach a token in the logout link and also put it in the user's session(SESSION['logout_token']). If an unwanted logout happens the 2 tokens are checked in order to see if the logout was intended by the user. Added some additional code in the ./login.php file for the checks. All this prevents csrf 
+
+8) members.php and search.php were viewable by a guest. Added an if statement in the respctable files to check if the user is logged in in order to display the page. Otherwise throw user error.

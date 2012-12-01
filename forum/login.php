@@ -13,15 +13,14 @@ require_once('./functions/core/login.php');
 
 //Attempt to log in if login information sent
 if (isset($_POST['user_name']) && isset($_POST['user_password'])) {
-	do_login($_POST['user_name'],$_POST['user_password']);
-	$core->do_redirect("index.php");
+		do_login($_POST['user_name'],$_POST['user_password'],$_POST['captcha_pass']);
+		$core->do_redirect("index.php");
 	}
 
 //Log out
 elseif (isset($_GET['action']) && $_GET['action'] == "logout" && $_SESSION['logout_token']==$_GET['token']) {
 	force_logout($core->session->get('token'));
 	$core->do_redirect("index.php");
-	fatal_user_error("asddas");
 }
 //Display login form
 elseif(!isset($_GET['action'])) { 

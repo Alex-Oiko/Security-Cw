@@ -102,7 +102,7 @@ function category_edit2($id) {
 	category_list();
 	}
 	else{
-		fatal_user_error("Something went wrong","Please contact the administrators")
+		fatal_user_error("Something went wrong","Please contact the administrators");
 	}
 }
 

@@ -31,16 +31,12 @@ class Document {
 		global $user;
 		$variables['page'] = $page;
 
-		$this->append_template("header",$variables);
-		if($user->get('user_type')==1 || $user->get('user_type')==2){
-			$token = sha1(uniqid(rand(),1));
-			$_SESSION['logout_token']=$token;	
-			$menuVar['token']=$token;
-			$this->append_template("menu_" . $user->get('user_type'),$menuVar);
-		}
-		else{
-			$this->append_template("menu_" . $user->get('user_type'));
-		}
+		$token = make_token();
+		$_SESSION['logout_token']=$token;
+		$arr = array('token'=>$token);
+		$this->append_template("header",$variables);		
+		$this->append_template("menu_" . $user->get('user_type'),$arr);
+
 		//Do sidebar hooks
 		$this->core->do_hooks('sidebar');
 
@@ -112,11 +108,10 @@ class Document {
 
 	/* Mini functions that map to templates */
 	public function make_form($id,$name,$action="",$method="post",$upload=false) {
-		$token=make_token();
 		$siteurl = $this->core->config['Paths']['web'];
 		$action = "$siteurl$action";
 		if ($id == "" || $name == "") { fatal_error("Missing form data for form creation"); }
-		$form = new Form($this,$id,$name,$action,$method,$upload,$token);
+		$form = new Form($this,$id,$name,$action,$method,$upload);
 		return $form;
 	}
 
@@ -129,16 +124,17 @@ class Form {
 	private $form_html = "";
 	private $document;
 	private $form_details;
+
 	/* Create a new form */
-	public function Form(&$document,$id,$name,$action,$method,$upload=false,$token) {
+	public function Form(&$document,$id,$name,$action,$method,$upload=false) {
+		$token = make_token();
 		$this->document =& $document;
 		$this->form_details['id'] = $id;
 		$this->form_details['name'] = $name;
 		$this->form_details['action'] = $action;
 		$this->form_details['method'] = $method;
 		$this->form_details['additional'] = ($upload) ? 'enctype="multipart/form-data"' : "";
-		$this->form_details['token'] = $token;
-		
+		$this->form_details['token']=$token;
 	}
 
 	/* Append more form HTML */

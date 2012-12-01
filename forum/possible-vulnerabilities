@@ -43,3 +43,5 @@ Failure when trying to login shows the faulty database query(11)
 -$query->something seems to come up very often in places that many vulnerabilities seem to exist.ASK!!(e.g. $query->add_data)
 
 -Maybe delete some files such as config.php, debug.php, info.php
+
+-While not a logged in user you can view the members.php file and search.php file

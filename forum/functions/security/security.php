@@ -1,5 +1,7 @@
 <?php
 
+
+require('CaptchasDotNet.php');
 //Ideally, put any security related functions in this file!
 /* Perform validation on text given a type */
 function validate($type,$text) {
@@ -44,7 +46,7 @@ function make_safe($type,$text) {
 
 
 }
-
+// Regenerate the session. This function is called in the /function/core/login.php file
 function regenerate_session(){
 	if(!isset($SESSION['initiated'])){
 		session_regenerate_id();
@@ -52,6 +54,7 @@ function regenerate_session(){
 	}
 }
 
+// Computes the salt that is going to be kept in the databse and used to hash the passwords
 function compute_salt(){
 	$chars='ABCDEFGHIJKLMNOPQRSTVUWXYZabcdefghijklmnopqrstvuwxyz0123456789';
 	$salt='';
@@ -61,13 +64,14 @@ function compute_salt(){
 	return $salt;
 }
 
+// Creates a token and adds it to the session. This function is called everytime a form is completed
 function make_token(){ 
 	$token = sha1(uniqid(rand(),1));
         $_SESSION['token']=$token;
 	return $token;
  
 }
-
+// This funciton checks the token from the post command and the session token
 function check_tokens($post,$session){
 	if(isset($post) && $post==$session){
 		return 1;
@@ -75,4 +79,17 @@ function check_tokens($post,$session){
 	else return 0;
 }
 
+function session_timeout(){
+$inactive=5;
+
+if(isset($_SESSION['timeout'])){
+	$session_hp=time()-$_SESSION['start'];
+	if($session_hp>$inactive){
+		session_destroy();
+		do_logout();
+	}
+	$_SESSION['timeout']=time();
+}
+
+}
 ?>
