@@ -52,6 +52,7 @@ if (isset($_POST['user_id'])) {
 			fatal_user_error("Invalid image URL specified","Please go back and try again");
 		}
 		$fileinfo = getimagesize($_POST['user_imageurl']);
+#		$size=$filesize($_FILES['user_imagefile']['tmp_name']);
 		if(!empty($fileinfo) && preg_match("/(png$ || jpg$ || jpeg$ || gif$)/",basename($_POST['user_imageurl']))){
 			$update['user_picture'] = make_safe("url",$_POST['user_imageurl']);
 		}
@@ -62,12 +63,12 @@ if (isset($_POST['user_id'])) {
 	//New picture upload
 	} else if (isset($_FILES['user_imagefile']['type']) && $_FILES['user_imagefile']['name'] != "") {
 			$file_info = getimagesize($_FILES['user_imagefile']['tmp_name']);
-			#fatal_user_error(dirname($_FILES['user_imagefile']['name']));
+			#$size=$filesize($_FILES['user_imagefile']['tmp_name']);
 			if(!empty($file_info) && preg_match("/(png$ || jpg$ || jpeg$ || gif$)/",basename($_FILES['user_imagefile']['name']))){
 				$update['user_picture'] = $core->do_upload('user_imagefile'); 
 			}
 			else{
-				fatal_user_error('The image you have uploaded has a problem','Either it is not in the right format, or it is not a picture');
+				fatal_user_error('The image you have uploaded has a problem','Either it is not in the right format, or it is not a picture or it is too big');
 			}
 	//No picture change
 	} else { unset($update['user_picture']); }

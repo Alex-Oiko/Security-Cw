@@ -29,19 +29,56 @@ class Document {
 	/* Header */
 	public function header($page="") { 
 		global $user;
-		$variables['page'] = $page;
+		$user_type=$user->get('user_type');
 
-		$token = make_token();
-		$_SESSION['logout_token']=$token;
-		$arr = array('token'=>$token);
-		$this->append_template("header",$variables);		
-		$this->append_template("menu_" . $user->get('user_type'),$arr);
+		if($user_type==1|| $user_type==2){
+			if(!isset($_SESSION['logout_token']) || !isset($_GET['logout_token'])){
+				#fatal_user_error($_GET['logout_token']);
+				$token = make_token();
+				$_SESSION['logout_token']=$token;
+				$variables['page'] = $page;
+			                  
+				$arr = array('logout_token'=>$token);
+				$this->append_template("header",$variables);            
+				$this->append_template("menu_" . $user->get('user_type'),$arr);
+			                     
+				//Do sidebar hooks
+				$this->core->do_hooks('sidebar');
+			                        
+				$this->append_template("content_header",$variables);
 
-		//Do sidebar hooks
-		$this->core->do_hooks('sidebar');
-
-		$this->append_template("content_header",$variables);		
+			}
+#			elseif($_SESSION['logout_token']==$GET['logout_token']){
+#				$variables['page'] = $page;
+#				fatal_user_error("asdadsasd","asdasdas");
+#				$token = make_token();
+#				$_SESSION['logout_token']=$token;
+#				$arr = array('logout_token'=>$token);
+#				$this->append_template("header",$variables);	
+#				$this->append_template("menu_" . $user->get('user_type'),$arr);
+#
+#				//Do sidebar hooks
+#				$this->core->do_hooks('sidebar');
+#
+#				$this->append_template("content_header",$variables);	
+#			}
+			else{#csrf if
+				fatal_user_error("asdadasdasdasd");
+			}
+		}
+		else{
+			$variables['page'] = $page;
+			                      
+			$this->append_template("header",$variables);    
+			$this->append_template("menu_" . $user->get('user_type'));
+			                               
+			//Do sidebar hooks
+			$this->core->do_hooks('sidebar');
+			                           
+			$this->append_template("content_header",$variables);
+		}
 	}
+
 
 	/* Footer */
 	public function footer() {

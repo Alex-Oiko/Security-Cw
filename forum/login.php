@@ -18,7 +18,7 @@ if (isset($_POST['user_name']) && isset($_POST['user_password'])) {
 	}
 
 //Log out
-elseif (isset($_GET['action']) && $_GET['action'] == "logout" && $_SESSION['logout_token']==$_GET['token']) {
+elseif (isset($_GET['action']) && $_GET['action'] == "logout" && $_SESSION['logout_token']==$_GET['logout_token']) {
 	force_logout($core->session->get('token'));
 	$core->do_redirect("index.php");
 }

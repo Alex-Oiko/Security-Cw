@@ -100,18 +100,24 @@ function force_login($userid) {
 /* Check cookie */
 function check_cookie($incookie) {
 	global $core;
-	//The cookie is stored in form usertype::userid
+	 //The cookie is stored in form usertype::userid
+
 	$cookiebits = explode("::",$incookie);
-	$userid = unserialize($cookiebits[1]);
-	$usertype = unserialize($cookiebits[0]);
+	$userid = $cookiebits[0];
+	$db_cookie = $cookiebits[1];
 
-	//Load user details from cookie
-	$realuser = new User($core);
-	$realuser->load_from_userid($userid);
-	$realuser->set("user_type",$usertype);
-
-	//Log in as that user
-	force_login($userid);
+		$realuser = new User($core);
+		$realuser->load_from_userid($userid);
+		$hash=$realuser->get("user_cookie");
+		
+		if($hash==$db_cookie){
+			$realuser->set("user_type",$realuser->get("user_type"));
+			//Log in as that user
+			force_login($userid);
+		}
+	else{
+		fatal_user_error("Something went wrong. Please delete your cookies and retry logging in");
+	}
 }
 
 /* Kill cookie */
@@ -128,12 +134,20 @@ function kill_cookie($logout=false) {
 
 /* Set a cookie */
 function set_cookie($userid) {
-	global $core, $user;
+	global $core, $user,$db;
+	$dbp = $db->db_prefix;
 	$name = $core->get('cookie_name');
 
 	$usertype = $user->get("user_type");
-	$outcookie = serialize($usertype) . "::" . serialize($userid);
+	
+	$salt=compute_salt();
+	
+	$hash=crypt($salt,$salt);
+
+	$outcookie = $userid."::".$hash;
 	setcookie($name, $outcookie, time() + 31104000);
+	$db->query("UPDATE {$dbp}user SET user_cookie='$hash' WHERE user_id='$userid'");
+
 }
 
 /* Do logout */

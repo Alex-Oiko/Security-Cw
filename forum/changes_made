@@ -4,9 +4,9 @@
 
 9)@ /functions/core/contact.php commented the part of adding an the contact_email and the user_email to the form. Also  @ contact.php changed the post commands at line 26 and in their place i put the contact_email from the db and the user_email from the db. Now the email addresses cannot be changed using firebug
 
-@functions/security/security.php--> added a function that is called regenerate_session which is called in the session function of login. It regenerates the session when it is needed to be regenerated
+@functions/security/security.php--> added a function that is called regenerate_session which is called in the session function of login. It regenerates the session in each page so as to prevent session fixation.
 
-3)@user.php-->added security when uploading a file, or using a link to upload the picture
+3)@user.php-->added security when uploading a file, or using a link to upload the picture. Using getimagesize I check if what the user has uploaded is a picture. CHECK FOR THE SIZE OF THE IMAGE 
 
 
 6)added a .htaccess file in the /modules, /function, /resources directories. Now nobody can access the directories in the server(info.php,config.php are not visible now. Maybe delete them?)
@@ -17,7 +17,7 @@
 
 added a captcha to login. REMEMBER TO REFER THAT I HAVE USED IT WHEN SUBMITTING. NOT ALL YOUR WORK
 
-7)serialized the cookies. Both the username and the user type. I unserialize every time I check
+7)Only the user id is saved in the cookie. The user type is not saved no more. The user_id is serialized. A hash is added in the end of the cookie and in the database in the user_cookie field. Every time the user tries to do something the cookie hash is checked against the one in the database. If it is correct the info is added (user_type) else an error is thrown.
 
 2)@security.php have added code on the make_safe function. This prevents XSS
 
