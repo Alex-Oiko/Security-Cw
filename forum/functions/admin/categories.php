@@ -141,8 +141,10 @@ function category_add2() {
 function category_delete($id) {
 	global $db, $document;
 
+	$token=make_token();
+	$_SESSION['dtoken']=$token;
 	$document->append_template("window",array('title'=>"Delete category?",'content'=>"Are you sure you want to delete this category?<br/><br/>" .
-		'<a href="$siteurl/admin.php/categories/delete2/' . $id . '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
+		'<a href="$siteurl/admin.php/categories/delete2/' . $id .'?dtoken='.$token. '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
 
 	category_list();
 }
@@ -151,12 +153,18 @@ function category_delete($id) {
 function category_delete2($id) {
 	global $db, $document;
 
+	if(check_tokens($_GET['dtoken'],$_SESSION['dtoken'])){
 	$query = $db->make_query("categories","DELETE");
 	$query->add_condition("category_id","=",$id);
 	$query->set_limit(1);
 	$query->execute();
 
 	$document->append_template("simple_template",array('title'=>"Category deleted",'text'=>"The category has been deleted"));
+	}
+	else{
+		fatal_user_error("Something went wrong","You were redircted here incorrectly");
+	}
+
 }
 
 ?>

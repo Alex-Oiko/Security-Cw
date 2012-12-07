@@ -148,8 +148,10 @@ function block_add2() {
 function block_delete($id) {
 	global $db, $document;
 
+	$token=make_token();
+	$_SESSION['dtoken']=$token;
 	$document->append_template("window",array('title'=>"Delete block?",'content'=>"Are you sure you want to delete this block?<br/><br/>" .
-		'<a href="$siteurl/admin.php/blocks/delete2/' . $id . '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
+		'<a href="$siteurl/admin.php/blocks/delete2/' . $id .'?dtoken='.$token. '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
 
 	block_list();
 }
@@ -158,12 +160,17 @@ function block_delete($id) {
 function block_delete2($id) {
 	global $db, $document;
 
+	if(check_tokens($_GET['dtoken'],$_SESSION['dtoken'])){
 	$query = $db->make_query("blocks","DELETE");
 	$query->add_condition("block_id","=",$id);
 	$query->set_limit(1);
 	$query->execute();
 
 	$document->append_template("simple_template",array('title'=>"Block deleted",'text'=>"The block has been deleted"));
+	}
+	else{
+		fatal_user_error("Something went wrong","You were redirected here incorrectly");
+	}
 }
 
 ?>

@@ -5,10 +5,6 @@ require_once('./include/global.php');
 global $core, $document, $user, $db;
 regenerate_session();
 //Check if the user is logged in in order to display the search page
-if($user->get('user_type')==0){#check the user_type
-	fatal_user_error("You are not authorised to view this page","You need to be registered and logged in to view this page");
-}
-else{
 /* Above page-specific */
 	$document->header("Search");
 
@@ -47,5 +43,4 @@ else{
 	/* End page-specific */
 	$document->footer();
 	$document->output();
-}
 ?>

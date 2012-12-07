@@ -62,15 +62,15 @@ function post_new_thread() {
 	global $core, $document, $user, $boards, $threads, $posts, $db;
 
 	if(check_tokens($_POST['token'],$_SESSION['token'])){
-	if (!isset($_REQUEST['board_id']) || !isset($_REQUEST['post_name']) || !isset($_REQUEST['post_message'])) {
+	if (!isset($_POST['board_id']) || !isset($_POST['post_name']) || !isset($_POST['post_message'])) {
 		fatal_error("Some or all of the information needed to post a new message are missing. Please try again");
 	}
 
 
 	//Make fields safe
-	$boardid = make_safe("int",$_REQUEST['board_id']);
-	$postname = make_safe("text",$_REQUEST['post_name']);
-	$postmessage = make_safe("text",$_REQUEST['post_message']);
+	$boardid = make_safe("int",$_POST['board_id']);
+	$postname = make_safe("text",$_POST['post_name']);
+	$postmessage = make_safe("text",$_POST['post_message']);
 
 	//Sanity check fields
 	if (strlen($postname) < 2 || strlen($postmessage) < 10) { 

@@ -39,7 +39,7 @@ function make_safe($type,$text) {
 
 	else if($type="text"){
 		$text = htmlspecialchars($text);#To prevent XSS
-		$text = mysql_real_escape_string($text);
+		#$text = mysql_real_escape_string($text);
 		return $text;
 	}
 	else fatal_user_error("Something went wrong wiht your input :/");

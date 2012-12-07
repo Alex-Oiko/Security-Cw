@@ -73,9 +73,9 @@ function set_session($userid) {
 	session_destroy();
 
 	//Start a new PHP session
-	#session_id(time());
+	session_id(time());
 	regenerate_session();
-	session_timeout();
+	#session_set_cookie_params("100",getcwd());	
 	session_start();
 	$aResponse['error'] = false; 
 

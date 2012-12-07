@@ -148,18 +148,17 @@ function templates_add2() {
 function templates_delete($id) {
 	global $db, $document;
 	$token=make_token();
-	$_SESSION['token']=$token;
+	$_SESSION['dtoken']=$token;
 	$document->append_template("form_element_hidden",array('id'=>"token",'name'=>"token",'default'=>$token));
 	$document->append_template("window",array('title'=>"Delete template?",'content'=>"Are you sure you want to delete this template?<br/><br/>" .
-		'<a href="$siteurl/admin.php/templates/delete2/' . $id . '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
+		'<a href="$siteurl/admin.php/templates/delete2/' . $id .'?dtoken='.$token. '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
 }
 
 /* Commit template deletion to database */
 function templates_delete2($id) {
 	global $db, $document;
-	echo $_POST['token'];
 	
-	if(check_tokens($_POST['token'],$_SESSION['token'])){
+	if(check_tokens($_GET['dtoken'],$_SESSION['dtoken'])){
 	
 	$query = $db->make_query("template","DELETE");
 	$query->add_condition("template_id","=",$id);

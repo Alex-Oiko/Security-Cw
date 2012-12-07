@@ -167,9 +167,11 @@ function board_add2() {
 /* Are you sure you want to delete this board? */
 function board_delete($id) {
 	global $db, $document;
-
+	
+	$token=make_token();
+	$_SESSION['dtoken']=$token;
 	$document->append_template("window",array('title'=>"Delete board?",'content'=>"Are you sure you want to delete this board?<br/><br/>" .
-		'<a href="$siteurl/admin.php/boards/delete2/' . $id . '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
+		'<a href="$siteurl/admin.php/boards/delete2/' . $id .'?dtoken='.$token. '">Yes</a> | <a href="$siteurl/index.php">No</a>',));
 
 	board_list();
 }
@@ -178,12 +180,17 @@ function board_delete($id) {
 function board_delete2($id) {
 	global $db, $document;
 
+	if($_GET['dtoken']==$_SESSION['dtoken']){
 	$query = $db->make_query("boards","DELETE");
 	$query->add_condition("board_id","=",$id);
 	$query->set_limit(1);
 	$query->execute();
 
 	$document->append_template("simple_template",array('title'=>"Board deleted",'text'=>"The board has been deleted"));
+	}
+	else{
+		fatal_user_error("Something went wrong","It seems that you have been redirected here incorrectly");
+	}
 }
 
 ?>

@@ -32,7 +32,6 @@ if (!isset($_GET['do'])) {
 	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	//Edit message
 	edit_message();
-
 	}
 	else{
 		fatal_user_error("Something went wrong","You were redirected incorectly here");
@@ -76,6 +75,7 @@ function new_reply_window($postid = 0) {
 	} else {
 		if(!isset($_GET['p'])) { fatal_error("No post specified"); }
 		$post = $posts->get_post($postid);
+		$user_post=$post['user_id'];
 		if (!$post) { fatal_error("Invalid post specified"); }
 		$threadid = $post['thread_id'];		
 	}
@@ -101,12 +101,17 @@ function new_reply_window($postid = 0) {
 		$form = new_reply_form($boardid,$threadid,"RE: $threadname",$quotemsg,$quoteauthor); 
 	//Edit
 	} else {
-		$subject = $post['post_name'];
-		$message = $post['post_message'];
-		$window['breadcrumb'] .= 'Edit Post</p>';
-		$window['heading'] = "Edit Post";
-		$window['description'] = "Fill in all the details required below to edit this post";
-		$form = edit_reply_form($boardid,$threadid,$postid,$subject,$message);
+		if($user->is_admin() || $user_post==$user->get('user_id')){#check if the user is the admin or is the one who posted the original post
+			$subject = $post['post_name'];
+			$message = $post['post_message'];
+			$window['breadcrumb'] .= 'Edit Post</p>';
+			$window['heading'] = "Edit Post";
+			$window['description'] = "Fill in all the details required below to edit this post";
+			$form = edit_reply_form($boardid,$threadid,$postid,$subject,$message);
+		}
+		else{
+			fatal_user_error("You don't have authorisation to post here");
+		}
 	}
 
 	$window['content'] = $form;
