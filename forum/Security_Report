@@ -1,0 +1,85 @@
+SQL Injection
+================
+Two places with SQL injection were found. In the log-in form and in search. This vulenrability was discovered by trying to inject various places in the forum. A sample injection that is used is "' or 'a'='a".
+
+In order to fix both I pass the parameters of the query through the htmlspecialchars() function. This is done in order to sanitize the input, in order to complete the query with no problems
+
+Cross-Site Scripting
+======================
+Multiple inputs in the forum seemed to have this vulnerability. It was initially discovered by writing javascript code in a new reply in a thread. After that, further inputs were discover to have this vulnerability.
+
+It was easily observed that most of these inputs would firstly go through the make_safe function in the security.php file. So all I had to do was to code that part and sanitize the input. 
+
+Insecure Upload 
+================
+This vulnerability was discovered after trying to upload different file formats. As soon as a .txt file was accepted by the server it was apparent that the upload functionality was weak.
+
+In order to improve the upload functionality code was added in order for the server to check if the file supplied is an image. That was done by using the getimagesize() function. The server also checks for accepted file formats through the extension of the file. Finally, the size of the image is checked.
+
+Out of date software
+=======================
+This vulnerability was discovered by searching for CMS's mentioned in the code. After finding FailCMS, the link was followed in order to find out more about it.
+
+Since none of the mirrors for updating FailCMS worked, it was apparent that it had to be disabled from the website in total. The reference of FailCMS in the code was deleted by changing the templates. Also in the website led to another vulnerability(File Inclusion). Taking into consideration the findings in the FailCMS website File Inclusion was discovered and fixed easier.
+
+Insecure storage of sensitive data
+===================================
+The discovery of this vulnerability was quite straightforward, since the passwords were saved in the database as plain text, which is a major flaw.
+
+In order to patch this flaw, the database was tweaked in order to store hashes of the password supplied by the user. In order to accomplish that, a salt(random string) is computed by using the compute_salt() function in the security.php file. As soon as the user registers a new salt is created and stored in the database. The password passes through the crypt() function along with the salt. Every time the user logs in or wishes to change the password, when he types his/her password the salt is queried from the database and using the crypt function again is reproduced in order to be cross-referenced with the one stored in the database.
+
+Exposure to sensitive data
+==============================
+This vulnerability was discovered by trying out different paths in the url of the. If one was to guess the names of the directories located in the website, he would be able to view all their content. Some of these files might have been irrelevant, but others such as info.php and config.php provided vital information of the system.
+
+In order to reduce the visibility of the outside user .htaccess files were used in order to hide these paths.
+
+Insecure Authentication
+==========================
+This vulnerability was discovered while modifying the forumlogin cookie of the forum. In its initial configuration the cookie had in complete visibility the user type and user id of the user. That way it was very easy for a malicious user to tweak the cookie and after deleting the session cookie, that user would be logged in as another user or even an admin.
+
+To fix this flaw a new cookie format was created. This cookie now stores the user id of the user along with a random string(hash). This hash is also stored in the database, in the user_cookie field. Every time the cookie is checked now the hash in the cookie is compared with the one in the database. Now even if a malicious user changes the user id, the hash will not match the one stored in the database.
+
+Insecure authorisation and control
+=====================================
+This vulnerability was discovered in a similar fashion as the exposure to sensitive data flaw. While logged out different pages were tested in the URL to see if there were any available. It was discovered that members.php and search.php were accessible by logged out users.
+ 
+In order to prevent such a weakness, in the members.php and search.php file an if statement was added in order to check the user type.
+
+
+Poor implementation of email
+==============================
+This vulnerability was discovered by reviewing the source page of the contact.php file. It was aparent that the sender's and recepient's address were not only visible, but easily changeable. That way the email could easily be used to produce spam email.
+
+To counter this flaw, the lines that add the emails in the source code and hence the contact form were removed. To have the correct recipient and sender their emails are accessed through the database.
+
+Brute Forcable login implementation
+======================================
+This vulnerability was pretty obvious, since a user could have a one letter password and use that to login. Also, by storing whatever kind of string in the database, no matter how complex, it would be vulnerable to brute forcing.
+
+In order to fix this, a captcha picture was added to both the logins. For the captcha in the login.php file a new template was created, that had all the necessary information in. Two elements were added in the login form to provide the necessary information. Captcha objects are used in order to create the information required and to cross reference them. The captcha in the quick login was done through the sidebar.php. A captcha object is created in that file along with html code in order to make the image appear. This html code is passed onto the sidebar variables, which in turn is passed to the quick_login template. Both the "quick_login" template and the "Your Account" block were tweaked to make tha captcha work. Finally, it is noteworthy to mention that the captcha images were built from already existing framework from http://captchas.net.
+
+Internal information exposed
+==============================
+This flaw was easily discovered, because it was produced when trying to SQL inject the login and search form. The SQL trace would be thrown into the page, hence displaying informaiton about the database. 
+
+To fix this, if statements were added in the include/class_database.php and include/functions.php files, in order to check if the user is an admin or not. If the user is not an admin a helpful user error message is thrown.
+
+File Inclusion
+================
+This vulnerability was discovered by discovering the old software vulnerability. In the FailCMS website, there existed links which would redirect to pages with code. One of these pages was stylesheet.php. As seen in the source code also the stylesheet is included every time. That leaves room for file inclusion.
+
+
+In order to prevent File inclusion, an array with all the available styles is created in the stylesheet.php file. Each time the stylesheet.php file is executed the style posted in the source code is checked if it exists in the array.
+
+Session Insecurity
+====================
+This vulnerability was easily noticable by viewing the PHPSSID cookie. Every time a new session was created, it seemed that only the last three digits of the session would change. That made it easy for a malicious user to guess the session id of another user and hence be logged under another user name.
+
+The counter measure for this flaw was to create a function called regenerate_session. This function would call the session_regenerate_id() function, which would regenerate the id every time it was called and also make it more complicated. This function was inserted in all the files of the forum, in order to regerate the session id in eery click. That would make the session change really fast thus not leaving many options for a malicious user to do session fixation.
+
+Cross-site request forgery
+==============================
+This vulnerability was discovered by posting links of the logout link in a post. That way when a user would click on it, he/she would be logged out without their permission. That problem however would span for all the forms in the forum and not just posting links.
+
+The solution to this problem was putting tokens as hidden inputs throughout the forms of the forum and in the logout link. This token would also be stored in the session and upon submitting the form, or trying to log out, the token that existed in the session would be compared to the one posted by the form. Only if they were the same would the form or logging out be submitted.

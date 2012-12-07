@@ -15,8 +15,8 @@ function make_login_form() {
 	$form->append("<p>Please type your username and password in the fields below to log in.</p>");
 	$form->add_element("user_name","User Name","text","","Your username",'style="width: 200px;"');
 	$form->add_element("user_password","Password","password","","Your password",'style="width: 200px;"');
-	$form->add_element("random"," ","hidden",$captchas->random(),"","");	
-	$form->add_element("captcha","Captcha","captcha",$captchas->image());
+	$form->add_element("random"," ","hidden",$captchas->random(),"","");#element for captcha	
+	$form->add_element("captcha","Captcha","captcha",$captchas->image());#element for captcha
 	$form->add_element("captcha_pass","Captcha","text","","Insert captcha",'style="width: 200px;"');
 	$form->append('<div class="center">');
 	$form->add_element_only("submit","Log in","submit","Log in","Log in");
@@ -32,16 +32,17 @@ function do_login($username,$password,$captcha) {
 	$cs = new CaptchasDotNet ('helolex', 'xhaFwUp5l2KsCSTqKjUltUepX2e807KcPrAL1Iin',
 	'/tmp/captchasnet-random-strings','3600',
 	'abcdefghkmnopqrstuvwxyz','6',
-	'240','80','000088');
+	'240','80','000088');#captcha object is created
 
-		if($cs->validate($_POST['random'])){
+		if($cs->validate($_POST['random'])){#the object above is used to cross reference the captcha word provided by the user, with the one drawn to the image 
 			if($cs->verify($_POST['captcha_pass'])){
-				$username = mysql_real_escape_string($username);
-				#$salt = $db->query("SELECT salt FROM {$dbp}user WHERE user_name='$username'");
-				#$salt=$salt->fetch_assoc();
-				#$salt=$salt['salt'];
-				#$password = crypt(mysql_real_escape_string($password),$salt);
-				$password=mysql_real_escape_string($password);
+				$username = mysql_real_escape_string($username);#escape the username, in order to prevent SQL injection
+				#get the salt from the database in order to compute the password and cross reference it with the hash stored in the database
+				$salt = $db->query("SELECT salt FROM {$dbp}user WHERE user_name='$username'");
+				$salt=$salt->fetch_assoc();
+				$salt=$salt['salt'];
+				$password = crypt(mysql_real_escape_string($password),$salt);
+				$password=mysql_real_escape_string($password);#same as the username
 				$result = $db->query("SELECT * FROM {$dbp}user WHERE user_name='$username' AND user_password='$password'");
 				if ($result->num_rows > 0) {
 					$user = $result->fetch_assoc();
@@ -52,7 +53,7 @@ function do_login($username,$password,$captcha) {
 					set_session($userid);
 			}
 			else {
-				fatal_user_error("Invalid username or password or answer");
+				fatal_user_error("Your password or username are wrong","Please try again");
 			}
 			}
 			else{
@@ -110,7 +111,7 @@ function check_cookie($incookie) {
 		$realuser->load_from_userid($userid);
 		$hash=$realuser->get("user_cookie");
 		
-		if($hash==$db_cookie){
+		if($hash==$db_cookie){#cross reference the hash in the cookie with the one stored in the database
 			$realuser->set("user_type",$realuser->get("user_type"));
 			//Log in as that user
 			force_login($userid);
@@ -140,13 +141,13 @@ function set_cookie($userid) {
 
 	$usertype = $user->get("user_type");
 	
-	$salt=compute_salt();
+	$salt=compute_salt();#compute a random string
 	
-	$hash=crypt($salt,$salt);
+	$hash=crypt($salt,$salt);#use it to produce a hash
 
-	$outcookie = $userid."::".$hash;
+	$outcookie = $userid."::".$hash;#store the hash in the cookie
 	setcookie($name, $outcookie, time() + 31104000);
-	$db->query("UPDATE {$dbp}user SET user_cookie='$hash' WHERE user_id='$userid'");
+	$db->query("UPDATE {$dbp}user SET user_cookie='$hash' WHERE user_id='$userid'");#also store the hash to the database
 
 }
 

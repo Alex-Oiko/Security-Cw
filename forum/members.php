@@ -5,7 +5,7 @@ require_once('./include/global.php');
 global $core, $document, $user, $db;
 regenerate_session();
 //check if the user is logged in in order to display the member list
-if($user->get('user_type')==0){
+if($user->get('user_type')==0){#check the user type
 	fatal_user_error("You are not authorised to view this page","You need to be registered and logged in to view the member list");
 }
 else{

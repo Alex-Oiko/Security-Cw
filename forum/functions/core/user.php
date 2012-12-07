@@ -16,7 +16,9 @@ function edit_profile($edituser) {
 	}
 
 	//Build form
-	$form = $document->make_form("profile","profile","/user.php","post",true);
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("profile","profile","/user.php",$token,"post",true);
 	$form->start_fieldset("editprofile",$edituser->get('user_name'));
 	$form->add_element_only("user_id","ID","hidden",$edituser->get('user_id'));
 	$form->add_element("user_email","Email","text",$edituser->get_default('user_email',""),"Please enter your email address");

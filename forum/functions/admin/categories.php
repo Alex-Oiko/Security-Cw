@@ -25,7 +25,9 @@ function category_add() {
 	global $core, $document;
 	
 	//Main options
-	$form = $document->make_form("addcategory","addcategory","/admin.php/categories/add2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("addcategory","addcategory","/admin.php/categories/add2",$token);
 	$form->start_fieldset("options","Add new category");
 	$form->add_element("category_name","Title","text","","Title of the category");
 	$form->add_element("category_description","Content","textarea","","Content of the category");
@@ -56,7 +58,9 @@ function category_edit($id) {
 	$category = $categories->fetch_assoc();
 
 	//Main options
-	$form = $document->make_form("editcategory","editcategory","/admin.php/categories/edit2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("editcategory","editcategory","/admin.php/categories/edit2",$token);
 	$form->start_fieldset("options","Editing category: " . $category["category_name"]);
 	$form->add_element_only("category_id","ID","hidden",$category["category_id"]);
 	$form->add_element("category_name","Title","text",$category["category_name"],"Title of the category");

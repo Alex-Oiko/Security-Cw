@@ -80,7 +80,7 @@ class Posts {
 		$search = str_replace("*","%",$search);
 
 		$dbp = $this->core->db->db_prefix;
-		$search=htmlspecialchars(mysql_real_escape_string($search));
+		$search=htmlspecialchars(mysql_real_escape_string($search));#to prevent SQL injection
 		//TODO: Should be moved to use the abstraction, just doing this way to test it works
 		$result = $this->core->db->query("SELECT * FROM {$dbp}posts,{$dbp}threads,{$dbp}boards,{$dbp}user WHERE {$dbp}posts.user_id = {$dbp}user.user_id AND {$dbp}posts.thread_id = {$dbp}threads.thread_id AND {$dbp}threads.board_id = {$dbp}boards.board_ID AND {$dbp}posts.post_message LIKE \"%$search%\" ORDER BY {$dbp}posts.post_timestamp DESC");
 

@@ -53,7 +53,7 @@ function do_register($username,$password_hash,$email) {
 	$query = $core->db->make_query("user","INSERT");
 	$query->add_data("user_name",$username);
 	$query->add_data("user_email",$email);
-	$query->add_data("user_password",crypt($password_hash,$salt));
+	$query->add_data("user_password",crypt($password_hash,$salt));#save the hash
 	$query->add_data("user_type",1);
 	$query->add_data("user_ip",$_SERVER['REMOTE_ADDR']);
 	$query->add_data("salt",$salt);

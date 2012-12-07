@@ -35,7 +35,9 @@ function board_add() {
 	}
 
 	//Main options
-	$form = $document->make_form("addboard","addboard","/admin.php/boards/add2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("addboard","addboard","/admin.php/boards/add2",$token);
 	$form->start_fieldset("options","Add new board");
 	$form->add_element("board_name","Title","text","","Title of the board");
 	$form->add_element("category_id","Category","list",$category_html,"Category of the board");
@@ -79,7 +81,9 @@ function board_edit($id) {
 	}
 
 	//Main options
-	$form = $document->make_form("editboard","editboard","/admin.php/boards/edit2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("editboard","editboard","/admin.php/boards/edit2",$token);
 	$form->start_fieldset("options","Editing board: " . $board["board_name"]);
 	$form->add_element_only("board_id","ID","hidden",$board["board_id"]);
 	$form->add_element("board_name","Title","text",$board["board_name"],"Title of the board");

@@ -45,7 +45,9 @@ function templates_edit($id) {
 	$template["template_text"] = str_replace('$','${_DOLLAR_}',$template["template_text"]);
 
 	//Main options
-	$form = $document->make_form("edittemplate","edittemplate","/admin.php/templates/edit2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("edittemplate","edittemplate","/admin.php/templates/edit2",$token);
 	$form->start_fieldset("options","Editing template: " . $template["template_name"]);
 	$form->add_element_only("template_id","ID","hidden",$template["template_id"]);
 	$form->add_element("template_name","Name","text",$template["template_name"],"Template identification name");
@@ -70,7 +72,9 @@ function templates_add() {
 	global $core, $document, $db;
 	
 	//Main options
-	$form = $document->make_form("addtemplate","addtemplate","/admin.php/templates/add2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("addtemplate","addtemplate","/admin.php/templates/add2",$token);
 	$form->start_fieldset("options","Add template");
 	$form->add_element("template_name","Name","text","","Template identification name");
 	$form->add_element("template_text","Content","textarea","","Content of the template");
@@ -88,6 +92,7 @@ function templates_add() {
 function templates_edit2($id) {
 	global $db, $document;
 
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	//Prepare variables
 	$name = $_POST['template_name'];
 	$text = $_POST['template_text'];
@@ -106,12 +111,17 @@ function templates_edit2($id) {
 	$document->append_template("window",array('title'=>"Template Administration",'content'=>"Template edited succesfully"));
 	$document->append("<br/>");
 	templates_list();
+	}
+	else{
+		fatal_user_error("Something went wrong","You were not redirected here correctly");
+	}
 }
 
 /* Commit template edit to database */
 function templates_add2() {
 	global $db, $document;
 
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	//Prepare variables
 	$name = $_POST['template_name'];
 	$text = $_POST['template_text'];
@@ -128,21 +138,29 @@ function templates_add2() {
 	$document->append_template("window",array('title'=>"Template Administration",'content'=>"Template added succesfully"));
 	$document->append("<br/>");
 	templates_list();
+	}
+	else{
+		fatal_user_error("Something went wrong","You were not redirected here correctly");
+	}
 }
 
 /* Are you sure you want to delete this template? */
 function templates_delete($id) {
 	global $db, $document;
-
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$document->append_template("form_element_hidden",array('id'=>"token",'name'=>"token",'default'=>$token));
 	$document->append_template("window",array('title'=>"Delete template?",'content'=>"Are you sure you want to delete this template?<br/><br/>" .
 		'<a href="$siteurl/admin.php/templates/delete2/' . $id . '">Yes</a> | <a href="$siteurl/index.php">No</a>'));
-
 }
 
 /* Commit template deletion to database */
 function templates_delete2($id) {
 	global $db, $document;
-
+	echo $_POST['token'];
+	
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
+	
 	$query = $db->make_query("template","DELETE");
 	$query->add_condition("template_id","=",$id);
 	$query->set_limit(1);
@@ -151,6 +169,11 @@ function templates_delete2($id) {
 	$document->append_template("window",array('title'=>"Template Administration",'content'=>"Template deleted succesfully"));
 	$document->append("<br/>");
 	templates_list();
+	}
+	else{
+		fatal_user_error("Something went wrong","You were not redirected here correctly");
+	}
+
 }
 
 

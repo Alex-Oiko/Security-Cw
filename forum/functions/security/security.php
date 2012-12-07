@@ -38,7 +38,7 @@ function make_safe($type,$text) {
 	}
 
 	else if($type="text"){
-		$text = htmlspecialchars($text);
+		$text = htmlspecialchars($text);#To prevent XSS
 		$text = mysql_real_escape_string($text);
 		return $text;
 	}
@@ -67,7 +67,6 @@ function compute_salt(){
 // Creates a token and adds it to the session. This function is called everytime a form is completed
 function make_token(){ 
 	$token = sha1(uniqid(rand(),1));
-        $_SESSION['token']=$token;
 	return $token;
  
 }
@@ -79,17 +78,4 @@ function check_tokens($post,$session){
 	else return 0;
 }
 
-function session_timeout(){
-$inactive=5;
-
-if(isset($_SESSION['timeout'])){
-	$session_hp=time()-$_SESSION['start'];
-	if($session_hp>$inactive){
-		session_destroy();
-		do_logout();
-	}
-	$_SESSION['timeout']=time();
-}
-
-}
 ?>

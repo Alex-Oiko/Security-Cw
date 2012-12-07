@@ -25,7 +25,9 @@ function block_add() {
 	global $core, $document;
 	
 	//Main options
-	$form = $document->make_form("addblock","addblock","/admin.php/blocks/add2");
+	$token = make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("addblock","addblock","/admin.php/blocks/add2",$token);
 	$form->start_fieldset("options","Add new block");
 	$form->add_element("block_title","Title","text","","Title of the block");
 	$form->add_element("block_content","Content","textarea","","Content of the block");
@@ -56,8 +58,10 @@ function block_edit($id) {
 	$blocks = $query->execute();
 	$block = $blocks->fetch_assoc();
 
-	//Main options
-	$form = $document->make_form("editblock","editblock","/admin.php/blocks/edit2");
+	//Main $tokenoptions
+	$token = make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("editblock","editblock","/admin.php/blocks/edit2",$token);
 	$form->start_fieldset("options","Editing block: " . $block["block_title"]);
 	$form->add_element_only("block_id","ID","hidden",$block["block_id"]);
 	$form->add_element("block_title","Title","text",$block["block_title"],"Title of the block");

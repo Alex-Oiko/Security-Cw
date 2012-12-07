@@ -31,52 +31,19 @@ class Document {
 		global $user;
 		$user_type=$user->get('user_type');
 
-		if($user_type==1|| $user_type==2){
-			if(!isset($_SESSION['logout_token']) || !isset($_GET['logout_token'])){
-				#fatal_user_error($_GET['logout_token']);
-				$token = make_token();
-				$_SESSION['logout_token']=$token;
-				$variables['page'] = $page;
+		$ltoken = make_token();
+		$_SESSION['logout_token']=$ltoken;
+		$variables['page'] = $page;
 			                  
-				$arr = array('logout_token'=>$token);
-				$this->append_template("header",$variables);            
-				$this->append_template("menu_" . $user->get('user_type'),$arr);
-			                     
-				//Do sidebar hooks
-				$this->core->do_hooks('sidebar');
+		$arr = array('logout_token'=>$ltoken);
+		$this->append_template("header",$variables);            
+		$this->append_template("menu_" . $user->get('user_type'),$arr);
+	                     
+		//Do sidebar hooks
+		$this->core->do_hooks('sidebar');
 			                        
-				$this->append_template("content_header",$variables);
+		$this->append_template("content_header",$variables);
 
-			}
-#			elseif($_SESSION['logout_token']==$GET['logout_token']){
-#				$variables['page'] = $page;
-#				fatal_user_error("asdadsasd","asdasdas");
-#				$token = make_token();
-#				$_SESSION['logout_token']=$token;
-#				$arr = array('logout_token'=>$token);
-#				$this->append_template("header",$variables);	
-#				$this->append_template("menu_" . $user->get('user_type'),$arr);
-#
-#				//Do sidebar hooks
-#				$this->core->do_hooks('sidebar');
-#
-#				$this->append_template("content_header",$variables);	
-#			}
-			else{#csrf if
-				fatal_user_error("asdadasdasdasd");
-			}
-		}
-		else{
-			$variables['page'] = $page;
-			                      
-			$this->append_template("header",$variables);    
-			$this->append_template("menu_" . $user->get('user_type'));
-			                               
-			//Do sidebar hooks
-			$this->core->do_hooks('sidebar');
-			                           
-			$this->append_template("content_header",$variables);
-		}
 	}
 
 
@@ -144,11 +111,11 @@ class Document {
 
 
 	/* Mini functions that map to templates */
-	public function make_form($id,$name,$action="",$method="post",$upload=false) {
+	public function make_form($id,$name,$action="",$token,$method="post",$upload=false) {
 		$siteurl = $this->core->config['Paths']['web'];
 		$action = "$siteurl$action";
 		if ($id == "" || $name == "") { fatal_error("Missing form data for form creation"); }
-		$form = new Form($this,$id,$name,$action,$method,$upload);
+		$form = new Form($this,$id,$name,$action,$method,$upload,$token);
 		return $form;
 	}
 
@@ -163,8 +130,7 @@ class Form {
 	private $form_details;
 
 	/* Create a new form */
-	public function Form(&$document,$id,$name,$action,$method,$upload=false) {
-		$token = make_token();
+	public function Form(&$document,$id,$name,$action,$method,$upload=false,$token) {
 		$this->document =& $document;
 		$this->form_details['id'] = $id;
 		$this->form_details['name'] = $name;
@@ -172,6 +138,7 @@ class Form {
 		$this->form_details['method'] = $method;
 		$this->form_details['additional'] = ($upload) ? 'enctype="multipart/form-data"' : "";
 		$this->form_details['token']=$token;
+	
 	}
 
 	/* Append more form HTML */

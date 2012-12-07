@@ -5,7 +5,9 @@ function new_thread_form($boardid) {
 	global $core, $document, $db;
 
 	//Main form body	
-	$form = $document->make_form("newthread","newthread","/newthread.php?do=post");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("newthread","newthread","/newthread.php?do=post",$token);
 	$form->start_fieldset("post","Post new thread");
 	$form->add_element_only("board_id","Board ID","hidden",$boardid,"The board for the thread");
 	$form->add_element("post_name","Thread subject","text","","The subject for the new thread");
@@ -34,7 +36,9 @@ function new_reply_form($boardid,$threadid,$subject = "",$quotemsg="",$quoteauth
 	}
 
 	//Main form body	
-	$form = $document->make_form("newreply","newreply","/newreply.php?do=post");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("newreply","newreply","/newreply.php?do=post",$token);
 	$form->start_fieldset("post","Post new reply");
 	$form->add_element_only("board_id","Board ID","hidden",$boardid,"The board for the thread");
 	$form->add_element_only("thread_id","Thread ID","hidden",$threadid,"The thread for the post");
@@ -59,7 +63,9 @@ function edit_reply_form($boardid,$threadid,$postid,$subject="",$message="") {
 	global $core, $document, $db;
 
 	//Main form body	
-	$form = $document->make_form("editreply","editreply","/newreply.php?do=edit2");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("editreply","editreply","/newreply.php?do=edit2",$token);
 	$form->start_fieldset("post","Edit post");
 	$form->add_element_only("board_id","Board ID","hidden",$boardid,"The board for the thread");
 	$form->add_element_only("thread_id","Thread ID","hidden",$threadid,"The thread for the post");
@@ -85,7 +91,9 @@ function search_form() {
 	global $core, $document, $db;
 
 	//Make form body
-	$form = $document->make_form("search","search","/search.php?do=search");
+	$token=make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("search","search","/search.php?do=search",$token);
 	$form->start_fieldset("search","Search posts");
 	$form->add_element("text","Search terms","text","","The search terms to search for");
 	$form->end_fieldset();

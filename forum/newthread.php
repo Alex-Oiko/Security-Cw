@@ -61,9 +61,11 @@ function new_thread_window() {
 function post_new_thread() {
 	global $core, $document, $user, $boards, $threads, $posts, $db;
 
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	if (!isset($_REQUEST['board_id']) || !isset($_REQUEST['post_name']) || !isset($_REQUEST['post_message'])) {
 		fatal_error("Some or all of the information needed to post a new message are missing. Please try again");
 	}
+
 
 	//Make fields safe
 	$boardid = make_safe("int",$_REQUEST['board_id']);
@@ -84,6 +86,10 @@ function post_new_thread() {
 
 	//Now go back to the forum
 	$core->do_redirect("forumdisplay.php?f=$boardid");		
+	}
+	else{
+		fatal_user_error("You were redirected incorrectly here");
+	}
 }
 
 

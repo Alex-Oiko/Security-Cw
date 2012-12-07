@@ -15,7 +15,9 @@ function contact_form() {
 	}
 
 	//Create form
-	$form = $document->make_form("contact","contact","/contact.php","post",false);
+	$token = make_token();
+	$_SESSION['token']=$token;
+	$form = $document->make_form("contact","contact","/contact.php",$token,"post",false);
 	$form->start_fieldset("sendmessage","Send Message");
 	#$form->add_element_only("to","To","hidden",$core->get('contact_email'));
 	#$form->add_element("from","From","hidden_text",$user->get('user_email'));

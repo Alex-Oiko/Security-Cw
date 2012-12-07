@@ -23,23 +23,28 @@ if (!isset($_GET['do'])) {
 	new_reply_window();
 
 } else if ($_GET['do'] == "edit") {
-
 	//Edit a post
 	if (!isset($_GET['p'])) { fatal_error("Please specify a post"); }
 
 	$postid = make_safe("int",$_GET['p']);
 	new_reply_window($postid);
-
 } else if ($_GET['do'] == "edit2") {
-
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	//Edit message
 	edit_message();
 
+	}
+	else{
+		fatal_user_error("Something went wrong","You were redirected incorectly here");
+	}
 } else {
-
+	if(check_tokens($_POST['token'],$_SESSION['token'])){
 	//Actually post a new reply 
 	post_new_reply();
-
+	}
+	else{
+		fatal_user_error("Something went wrong","You were redirected incorectly here");
+	}
 }
 
 /* End page-specific */
